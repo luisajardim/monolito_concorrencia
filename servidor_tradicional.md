@@ -637,6 +637,15 @@ module.exports = router;
 
 ---
 
+### 5.3 Rotas de Usuário (`routes/users.js`)
+
+```javascript
+// GET /api/users/me - retorna dados do usuário autenticado
+// PUT /api/users/me - atualiza email/username/nome/sobrenome do usuário autenticado
+```
+
+---
+
 ## **PASSO 6: Servidor Principal**
 
 ### 6.1 Implementação do Servidor (`server.js`)
@@ -652,6 +661,7 @@ const config = require('./config/database');
 const database = require('./database/database');
 const authRoutes = require('./routes/auth');
 const taskRoutes = require('./routes/tasks');
+const userRoutes = require('./routes/users');
 
 /**
  * Servidor de Aplicação Tradicional
@@ -687,6 +697,7 @@ app.get('/', (req, res) => {
         architecture: 'Traditional Client-Server',
         endpoints: {
             auth: ['POST /api/auth/register', 'POST /api/auth/login'],
+            users: ['GET /api/users/me', 'PUT /api/users/me'],
             tasks: ['GET /api/tasks', 'POST /api/tasks', 'PUT /api/tasks/:id', 'DELETE /api/tasks/:id']
         }
     });
@@ -703,6 +714,7 @@ app.get('/health', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/tasks', taskRoutes);
 
 // 404 handler
@@ -760,8 +772,9 @@ module.exports = app;
   "description": "Sistema de tarefas com arquitetura cliente-servidor tradicional",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+        "start": "node server.js",
+        "dev": "nodemon server.js",
+        "test": "jest"
   },
   "keywords": ["sistemas-distribuidos", "cliente-servidor", "rest-api"],
   "author": "Aluno PUC Minas",
@@ -781,7 +794,12 @@ npm run dev
 
 # Modo produção
 npm start
+
+# Testes automatizados (Jest + Supertest)
+npm test
 ```
+
+> Rode os comandos a partir da pasta `lab01-servidor-tradicional` ou use `npm --prefix lab01-servidor-tradicional <comando>`. Defina `JWT_SECRET` ao iniciar o servidor.
 
 ### 8.2 Testar com cURL
 
@@ -810,6 +828,11 @@ curl -X GET http://localhost:3000/api/tasks \
 ---
 
 ## **PASSO 9: Análise e Documentação**
+
+### 9.0 Documentação da API
+
+- Especificação OpenAPI: `lab01-servidor-tradicional/docs/openapi.yaml`
+- Endpoints principais: autenticação, usuário (`/api/users/me` GET/PUT) e tarefas (CRUD + stats).
 
 ### 9.1 Análise Arquitetural
 
@@ -850,12 +873,12 @@ curl -X GET http://localhost:3000/api/tasks \
 
 ## Entregáveis
 
-- [ ] Código fonte completo e funcional
-- [ ] API REST com todas as operações CRUD
-- [ ] Sistema de autenticação JWT
-- [ ] Documentação da API (endpoints e payloads)
-- [ ] Análise de performance básica
-- [ ] Identificação de limitações arquiteturais
+- [x] Código fonte completo e funcional
+- [x] API REST com todas as operações CRUD
+- [x] Sistema de autenticação JWT
+- [x] Documentação da API (endpoints e payloads)
+- [x] Análise de performance básica
+- [x] Identificação de limitações arquiteturais
 
 ## Comandos de Execução
 
@@ -893,3 +916,11 @@ Este roteiro estabelece a **base arquitetural** para os laboratórios seguintes:
 3. **Performance**: Onde estão os possíveis gargalos do sistema?
 4. **Manutenção**: Como seria o processo de atualização em produção?
 5. **Evolução**: Que mudanças seriam necessárias para suportar múltiplas regiões?
+
+**Respostas Sintetizadas**
+
+1. Escalabilidade: com 1000 usuários simultâneos, a arquitetura monolítica suporta carga moderada via escalonamento vertical; além disso, caching em memória e tuning de pool de conexões SQLite ajudam, mas o aumento é limitado pela capacidade de um único nó.
+2. Disponibilidade: o servidor único e o arquivo SQLite são pontos únicos de falha; ausência de replicação e balanceamento impede failover automático.
+3. Performance: gargalos principais em acesso a disco do SQLite, CPU em picos de hashing/bcrypt e event loop bloqueado por operações síncronas ou consultas pesadas sem índice.
+4. Manutenção: atualização exige parada ou breve indisponibilidade; usar blue/green ou canary requer instâncias duplicadas e sincronização do banco.
+5. Evolução: para múltiplas regiões, seria necessário banco replicado ou distribuído, instâncias atrás de balanceadores regionais, estratégia de roteamento geográfico e configuração de observabilidade centralizada.

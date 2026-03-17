@@ -1,0 +1,238 @@
+openapi: 3.0.3
+info:
+  title: Task Management API - Tradicional
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/auth/register:
+    post:
+      summary: Registrar usuário
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Usuário criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '409': { description: Conflito (email/username existente) }
+  /api/auth/login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Token JWT emitido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401': { description: Credenciais inválidas }
+  /api/users/me:
+    get:
+      summary: Detalhes do usuário autenticado
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Dados do usuário
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401': { description: Não autorizado }
+    put:
+      summary: Atualizar dados do usuário
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200': { description: Usuário atualizado }
+        '409': { description: Conflito (email/username) }
+  /api/tasks:
+    get:
+      summary: Listar tarefas do usuário
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: completed
+          schema:
+            type: boolean
+        - in: query
+          name: priority
+          schema:
+            type: string
+            enum: [low, medium, high, urgent]
+      responses:
+        '200':
+          description: Lista de tarefas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+    post:
+      summary: Criar tarefa
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreateRequest'
+      responses:
+        '201': { description: Tarefa criada }
+  /api/tasks/{id}:
+    get:
+      summary: Buscar tarefa
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200': { description: Tarefa encontrada }
+        '404': { description: Não encontrada }
+    put:
+      summary: Atualizar tarefa
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdateRequest'
+      responses:
+        '200': { description: Tarefa atualizada }
+        '404': { description: Não encontrada }
+    delete:
+      summary: Remover tarefa
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200': { description: Removida }
+        '404': { description: Não encontrada }
+  /api/tasks/stats/summary:
+    get:
+      summary: Estatísticas do usuário
+      security:
+        - bearerAuth: []
+      responses:
+        '200': { description: Resumo de tarefas }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        email: { type: string, format: email }
+        username: { type: string }
+        firstName: { type: string }
+        lastName: { type: string }
+        createdAt: { type: string }
+    RegisterRequest:
+      type: object
+      required: [email, username, password, firstName, lastName]
+      properties:
+        email: { type: string, format: email }
+        username: { type: string }
+        password: { type: string, format: password }
+        firstName: { type: string }
+        lastName: { type: string }
+    LoginRequest:
+      type: object
+      required: [identifier, password]
+      properties:
+        identifier: { type: string }
+        password: { type: string, format: password }
+    UserUpdateRequest:
+      type: object
+      properties:
+        email: { type: string, format: email }
+        username: { type: string }
+        firstName: { type: string }
+        lastName: { type: string }
+    UserResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          $ref: '#/components/schemas/User'
+    AuthResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: object
+          properties:
+            user:
+              $ref: '#/components/schemas/User'
+            token: { type: string }
+    Task:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        description: { type: string }
+        completed: { type: boolean }
+        priority: { type: string }
+        userId: { type: string }
+        createdAt: { type: string }
+    TaskCreateRequest:
+      type: object
+      required: [title]
+      properties:
+        title: { type: string }
+        description: { type: string }
+        priority:
+          type: string
+          enum: [low, medium, high, urgent]
+    TaskUpdateRequest:
+      type: object
+      properties:
+        title: { type: string }
+        description: { type: string }
+        completed: { type: boolean }
+        priority:
+          type: string
+          enum: [low, medium, high, urgent]
