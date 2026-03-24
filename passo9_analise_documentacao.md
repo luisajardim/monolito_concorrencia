@@ -101,7 +101,7 @@ Interpretacao: a evidencia visual confirma a corretude do controle de concorrenc
 | Pedidos simultaneos distintos | Ficam serializados no momento do aceite | Podem ser processados em paralelo |
 | Adequacao | Desenvolvimento e laboratorio | Producao com alta concorrencia |
 
-## Analise comparativa (minimo 10 linhas)
+## Analise comparativa 
 
 1. O ponto principal da corretude esta no `db.transaction()` durante o aceite do pedido.
 2. Quando a transacao de escrita comeca no SQLite (`BEGIN IMMEDIATE`), ela bloqueia novas escritas concorrentes.
