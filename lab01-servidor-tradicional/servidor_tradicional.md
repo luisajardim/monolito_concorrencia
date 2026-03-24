@@ -259,6 +259,36 @@ class Task {
         return { isValid: errors.length === 0, errors };
     }
 
+---
+
+## Evidencias Visuais (LogiTrack V1)
+
+As capturas abaixo devem ficar nesta pasta para aparecer no preview do Markdown:
+`lab01-servidor-tradicional/evidencias/`
+
+Nomes esperados dos arquivos:
+- `01_servidor_dev.png`
+- `02_swagger_docs.png`
+- `03_teste_concorrencia.png`
+
+### 1. Servidor em execucao (`npm run dev`)
+
+![Servidor em execucao](./evidencias/01_servidor_dev.png)
+
+### 2. Swagger aberto em `/docs`
+
+![Swagger UI](./evidencias/02_swagger_docs.png)
+
+### 3. Teste de concorrencia (`teste_concorrencia.js`)
+
+![Resultado do teste de concorrencia](./evidencias/03_teste_concorrencia.png)
+
+### Checklist visual rapido
+
+- No print 1: deve aparecer `Schema LogiTrack V1 inicializado com sucesso`.
+- No print 2: deve aparecer URL `localhost:3001/docs` e endpoints listados.
+- No print 3: deve aparecer `Aceitacoes registradas: 1` e `Janela de simultaneidade`.
+
     toJSON() {
         return { ...this };
     }
