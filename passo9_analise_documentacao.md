@@ -27,47 +27,10 @@ Conclusao: a documentacao da API esta acessivel e os endpoints aparecem na inter
 
 ![Teste de concorrencia](./lab01-servidor-tradicional/evidencias/03_teste_concorrencia.png)
 
-### Evidencia anexada (captura de tela)
-
-Foi anexada uma captura de tela do terminal com o comando:
-`npm --prefix c:\Users\jardi\OneDrive\FACULDADE\servidor_tradicional-1\logitrack-v1 run dev`
-
-Na imagem aparecem as seguintes saidas:
-- `Schema LogiTrack V1 inicializado com sucesso.`
-- `LogiTrack V1 (SQLite/ESM) iniciado na porta 3001`
-- `Docs:   http://localhost:3001/docs`
-- `Health: http://localhost:3001/health`
-- `[nodemon] clean exit - waiting for changes before restart`
-
-Interpretacao: o servidor subiu sem erro de runtime e os endpoints essenciais ficaram disponiveis.
-
-### Evidencia visual 2 - Swagger UI aberto
-
-Tambem foi anexada uma captura de tela do navegador com o Swagger aberto em `localhost:3001/docs/`.
-
-Elementos visiveis na imagem:
-- titulo da API: `LogiTrack API V1 - Monolito (SQLite / ESM)`;
-- descricao do sprint com a explicacao de locking;
-- grupos de endpoints `Autenticacao` e `Pedidos`;
-- rotas principais listadas, incluindo `POST /api/orders/{id}/accept`.
-
-Interpretacao: essa evidencia confirma visualmente que a documentacao OpenAPI foi gerada e esta acessivel, com os endpoints esperados publicados.
-
-### Evidencia visual 3 - Resultado do teste de concorrencia
-
-Tambem foi anexada uma captura do terminal com a execucao do teste de concorrencia (`teste_concorrencia.js`).
-
-Pontos comprovados na imagem:
-- resumo com `Total de entregadores : 5`;
-- `Aceitacoes registradas: 1`;
-- `Janela de simultaneidade: 5ms`;
-- mensagem final `CORRETO: exatamente 1 aceitacao - Pessimistic Locking funcionou!`.
-
-Na mesma captura, tambem aparecem verificacoes de disponibilidade com status `200` para:
-- `http://localhost:3001/health`
-- `http://localhost:3001/docs`
-
-Interpretacao: a evidencia visual confirma a corretude do controle de concorrencia (apenas um aceite bem-sucedido) e a disponibilidade dos endpoints principais.
+As tres capturas acima cobrem os pontos exigidos no roteiro:
+- inicializacao do servidor sem erro;
+- Swagger acessivel em `/docs`;
+- teste de concorrencia com `Aceitacoes registradas: 1` e janela de simultaneidade.
 
 ## 9.2 Resumo das adaptacoes CJS -> ESM
 
@@ -101,7 +64,7 @@ Interpretacao: a evidencia visual confirma a corretude do controle de concorrenc
 | Pedidos simultaneos distintos | Ficam serializados no momento do aceite | Podem ser processados em paralelo |
 | Adequacao | Desenvolvimento e laboratorio | Producao com alta concorrencia |
 
-## Analise comparativa 
+## Analise comparativa (min 10 linhas)
 
 1. O ponto principal da corretude esta no `db.transaction()` durante o aceite do pedido.
 2. Quando a transacao de escrita comeca no SQLite (`BEGIN IMMEDIATE`), ela bloqueia novas escritas concorrentes.
