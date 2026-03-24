@@ -11,6 +11,22 @@ Eu validei o Swagger em `http://localhost:3001/docs`.
 O retorno da verificacao por terminal foi `HTTP 200`.
 Conclusao: a documentacao da API esta acessivel e os endpoints aparecem na interface.
 
+### Capturas de tela (visiveis no roteiro)
+
+> As capturas estao na pasta `lab01-servidor-tradicional/evidencias/`.
+
+#### Print 1 - Servidor inicializado (`npm run dev`)
+
+![Servidor inicializado](./lab01-servidor-tradicional/evidencias/01_servidor_dev.png)
+
+#### Print 2 - Swagger aberto (`/docs`)
+
+![Swagger aberto](./lab01-servidor-tradicional/evidencias/02_swagger_docs.png)
+
+#### Print 3 - Teste de concorrencia
+
+![Teste de concorrencia](./lab01-servidor-tradicional/evidencias/03_teste_concorrencia.png)
+
 ### Evidencia anexada (captura de tela)
 
 Foi anexada uma captura de tela do terminal com o comando:
@@ -105,10 +121,9 @@ Interpretacao: a evidencia visual confirma a corretude do controle de concorrenc
 Com base nos testes e nas evidencias, os entregaveis do roteiro foram atendidos.
 O sistema ficou funcional para o cenario de laboratorio, com autenticacao, pedidos, docs e controle de concorrencia validado.
 
-## Evidencia visual pendente e evidencia textual ja validada
+## Evidencia textual complementar
 
-A unica evidencia visual que ainda depende de captura manual e o print da saida do `teste_concorrencia.js`.
-Mesmo assim, a execucao ja foi realizada e o resultado foi registrado abaixo:
+Resumo textual da execucao do `teste_concorrencia.js` (comprovando o mesmo resultado do print):
 
 ```text
 Pedido criado: 2ee18991-4897-4605-835d-f7aa6c63235d
